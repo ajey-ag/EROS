@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# EROS local config (may reference machine-specific paths; keys stay in env vars)
+.eros/config.local.toml
+
+# Raw agent transcripts can be huge; run summaries (RUN-*.md) are committed
+workspace/**/runs/*.transcript.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
