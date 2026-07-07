@@ -32,7 +32,17 @@ def load_records(paths):
                 f"error: {path} does not look like a ratezoo.bench result file"
             )
         records.extend(data)
-    return records
+    # Burst workloads are deterministic, so merging result files from runs
+    # that differ only in throughput settings yields byte-identical burst
+    # records — collapse exact duplicates, keeping first occurrence order.
+    seen = set()
+    unique = []
+    for r in records:
+        key = json.dumps(r, sort_keys=True)
+        if key not in seen:
+            seen.add(key)
+            unique.append(r)
+    return unique
 
 
 def _md_table(header, rows):

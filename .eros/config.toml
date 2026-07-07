@@ -8,6 +8,9 @@ default = "claude_code"
 [provider.claude_code]
 binary = "claude"          # override with a full path in config.local.toml if not on PATH
 timeout_s = 900
+# Commands the headless agent may run to verify its own work (acceptEdits
+# alone denies all execution — the RUN-001 lesson). Extend per project needs.
+allowed_tools = ["Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(pytest:*)"]
 
 [provider.anthropic]
 model = "claude-sonnet-5"

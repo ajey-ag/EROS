@@ -2,13 +2,13 @@
 
 ## Throughput
 
-| algorithm | ops/sec (1 thread) |
-| --- | --- |
-| fixed_window | 1,859,518 |
-| leaky_bucket | 635,941 |
-| sliding_counter | 545,734 |
-| sliding_log | 1,114,653 |
-| token_bucket | 675,588 |
+| algorithm | ops/sec (1 thread) | ops/sec (4 threads) |
+| --- | --- | --- |
+| fixed_window | 1,859,518 | 1,620,358 |
+| leaky_bucket | 635,941 | 739,500 |
+| sliding_counter | 545,734 | 630,129 |
+| sliding_log | 1,114,653 | 1,047,439 |
+| token_bucket | 675,588 | 822,907 |
 
 ## Burst workload: ramp
 

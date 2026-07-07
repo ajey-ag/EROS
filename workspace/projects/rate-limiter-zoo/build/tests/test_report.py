@@ -90,6 +90,20 @@ def test_render_merges_multiple_files(tmp_path):
     assert "spike" in out
 
 
+def test_merge_deduplicates_identical_burst_records(tmp_path):
+    # Two result files from runs differing only in throughput settings
+    # contain byte-identical deterministic burst records.
+    a = tmp_path / "a.json"
+    b = tmp_path / "b.json"
+    a.write_text(json.dumps(FIXTURE), encoding="utf-8")
+    b.write_text(json.dumps(FIXTURE[2:]), encoding="utf-8")  # same spike records
+    from ratezoo.bench.report import load_records
+
+    records = load_records([str(a), str(b)])
+    spikes = [r for r in records if r["workload"] == "spike"]
+    assert len(spikes) == 2  # one per algorithm, not doubled
+
+
 def test_exit_code_2_for_missing_file(tmp_path):
     proc = subprocess.run(
         [sys.executable, "-m", "ratezoo.bench.report", str(tmp_path / "nope.json")],

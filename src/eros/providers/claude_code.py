@@ -64,8 +64,24 @@ class ClaudeCodeProvider(Provider):
             raise ClaudeCodeError(str(data.get("result", "unknown error"))[:2000])
         return data.get("result", "")
 
+    # acceptEdits alone lets the agent write files but denies every command
+    # execution, so it can never verify its own work (RUN-001 of
+    # rate-limiter-zoo failed review exactly this way). Pre-authorize the
+    # standard verification commands; override via [provider.claude_code]
+    # allowed_tools in .eros/config.toml.
+    DEFAULT_ALLOWED_TOOLS = [
+        "Bash(python:*)",
+        "Bash(python3:*)",
+        "Bash(pip:*)",
+        "Bash(pytest:*)",
+    ]
+
     def agent_run(self, spec: str, cwd: Path) -> AgentResult:
-        data = self._run(spec, cwd=cwd, extra_args=["--permission-mode", "acceptEdits"])
+        allowed = self.cfg.get("allowed_tools", self.DEFAULT_ALLOWED_TOOLS)
+        extra_args = ["--permission-mode", "acceptEdits"]
+        if allowed:
+            extra_args += ["--allowedTools", *allowed]
+        data = self._run(spec, cwd=cwd, extra_args=extra_args)
         return AgentResult(
             success=not data.get("is_error", False),
             output=str(data.get("result", "")),
