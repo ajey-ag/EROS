@@ -8,8 +8,7 @@ this file is the index and the current state of the world.
 - **Stage:** 4 — first project (rate-limiter-zoo) **shipped**: 8/8 tasks, 63 tests
   green, benchmark data + `WRITEUP.md` (the charter deliverable) done
 - **Next up:** flagship #2 from the shortlist (IDEA-002 Prompt Regression CI or
-  IDEA-026 Model Card Autogenerator); push repo to GitHub once the remote URL
-  is provided (gh CLI not installed — user creating the repo manually)
+  IDEA-026 Model Card Autogenerator)
 
 ## Roadmap position
 
@@ -33,12 +32,6 @@ this file is the index and the current state of the world.
 - **2026-07-07** — API keys only ever referenced by env-var name in config, never stored in the repo.
 - **2026-07-08** — Headless dispatch pre-authorizes `python`/`pip`/`pytest` (`allowed_tools` in `.eros/config.toml`): an agent that cannot run its own verification produces unreviewable work (the RUN-001 lesson).
 
-## Publishing to GitHub
+## GitHub
 
-```bash
-# once `gh` is installed and authenticated:
-gh repo create eros --private --source . --push
-# or manually:
-git remote add origin https://github.com/<you>/eros.git
-git push -u origin main
-```
+Published 2026-07-08: https://github.com/ajey-ag/EROS (`origin`, `main` tracking).
