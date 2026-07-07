@@ -1,0 +1,27 @@
+# EROS shared configuration (committed — no secrets, no machine-specific paths).
+# Machine-local overrides go in .eros/config.local.toml (gitignored).
+# API keys are ALWAYS referenced by env-var name, never stored here.
+
+[provider]
+default = "claude_code"
+
+[provider.claude_code]
+binary = "claude"          # override with a full path in config.local.toml if not on PATH
+timeout_s = 900
+
+[provider.anthropic]
+model = "claude-sonnet-5"
+api_key_env = "ANTHROPIC_API_KEY"
+
+[provider.ollama]
+base_url = "http://localhost:11434"
+model = "qwen2.5-coder:7b"
+
+[provider.openai_compat]
+# examples:
+#   Groq:      base_url = "https://api.groq.com/openai/v1",  api_key_env = "GROQ_API_KEY"
+#   Together:  base_url = "https://api.together.xyz/v1",     api_key_env = "TOGETHER_API_KEY"
+#   LM Studio: base_url = "http://localhost:1234/v1"         (no key needed)
+base_url = "http://localhost:1234/v1"
+model = ""
+api_key_env = "OPENAI_COMPAT_API_KEY"
