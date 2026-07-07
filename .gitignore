@@ -4,8 +4,9 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
-build/
-dist/
+# root-anchored: workspace/projects/*/build/ holds project deliverables
+/build/
+/dist/
 
 # EROS local config (may reference machine-specific paths; keys stay in env vars)
 .eros/config.local.toml

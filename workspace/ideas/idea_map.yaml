@@ -1,545 +1,1135 @@
 # EROS Idea Map — source of truth (rendered to docs/IDEA_MAP.md via `eros idea render`)
 meta:
   version: 1
-  updated: "2026-07-07"
+  updated: '2026-07-07'
   scoring:
-    axes: [originality, technical_depth, interview_value, startup_potential, reuse]
-    scale: "1 (low) to 5 (high); total = sum of the five axes (max 25)"
-
+    axes:
+    - originality
+    - technical_depth
+    - interview_value
+    - startup_potential
+    - reuse
+    scale: 1 (low) to 5 (high); total = sum of the five axes (max 25)
 domains:
-  - key: llm-agent-infra
-    name: "LLM & Agent Infrastructure"
-  - key: ml-systems
-    name: "ML Systems & Reliability"
-  - key: data-engineering
-    name: "Data Engineering & Pipelines"
-  - key: simulation
-    name: "Simulation & Modeling"
-  - key: dev-tooling
-    name: "Developer Tooling"
-  - key: applied-ml
-    name: "Applied ML Products"
-  - key: distributed-systems
-    name: "Distributed Systems & Performance"
-  - key: human-ai-viz
-    name: "Human–AI Interfaces & Visualization"
-
+- key: llm-agent-infra
+  name: LLM & Agent Infrastructure
+- key: ml-systems
+  name: ML Systems & Reliability
+- key: data-engineering
+  name: Data Engineering & Pipelines
+- key: simulation
+  name: Simulation & Modeling
+- key: dev-tooling
+  name: Developer Tooling
+- key: applied-ml
+  name: Applied ML Products
+- key: distributed-systems
+  name: Distributed Systems & Performance
+- key: human-ai-viz
+  name: Human–AI Interfaces & Visualization
 ideas:
-  # ── LLM & Agent Infrastructure ──────────────────────────────────────────
-  - id: IDEA-001
-    title: Agent Trace Debugger
-    domain: llm-agent-infra
-    pitch: Record, replay, and diff multi-step agent executions — step through tool calls like a debugger, pin a failing step, and re-run from it with a modified prompt or model.
-    scores: {originality: 5, technical_depth: 4, interview_value: 5, startup_potential: 4, reuse: 5}
-    flagship_candidate: true
-  - id: IDEA-002
-    title: Prompt Regression CI
-    domain: llm-agent-infra
-    pitch: A test harness that treats prompts like code — semantic-diff model outputs across prompt edits and model upgrades, gate merges on eval scores.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 4, reuse: 5}
-  - id: IDEA-003
-    title: Difficulty-Aware Model Router
-    domain: llm-agent-infra
-    pitch: Route each query between a local Ollama model and a cloud model by predicted difficulty and cost budget, learning the routing policy from outcome feedback.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-004
-    title: Context Compiler
-    domain: llm-agent-infra
-    pitch: A deterministic "linker" that assembles LLM context from code, docs, and memory under a token budget, with explicit include/priority rules instead of ad-hoc retrieval.
-    scores: {originality: 5, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-005
-    title: Tool-Schema Fuzzer
-    domain: llm-agent-infra
-    pitch: Fuzz an agent's tool definitions with adversarial inputs and malformed arguments to find brittle schemas and unhandled tool errors before production.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-006
-    title: Decaying Memory Engine
-    domain: llm-agent-infra
-    pitch: File-backed agent memory with recency/importance decay and consolidation passes — memories merge, fade, and strengthen like a spaced-repetition system for agents.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-007
-    title: LLM Cost Profiler
-    domain: llm-agent-infra
-    pitch: Flame-graph-style attribution of token spend across an agent pipeline — see which subagent, prompt section, or retry loop is burning the budget.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-008
-    title: Structured-Output Proving Ground
-    domain: llm-agent-infra
-    pitch: Benchmark grammar-constrained decoding, JSON-schema modes, and retry strategies across providers to quantify which structured-output method fails least per task type.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 4}
-  - id: IDEA-009
-    title: Agent Sandbox Arena
-    domain: llm-agent-infra
-    pitch: Reproducible containerized environments with seeded bugs where coding agents compete — measure fix rate, cost, and collateral damage per model.
-    scores: {originality: 4, technical_depth: 5, interview_value: 5, startup_potential: 3, reuse: 4}
-  - id: IDEA-010
-    title: Heterogeneous Agent Negotiation Testbed
-    domain: llm-agent-infra
-    pitch: Study protocols for splitting a task between a strong cloud model and weak local models — who plans, who executes, and when escalation pays off.
-    scores: {originality: 5, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-011
-    title: RAG Freshness Monitor
-    domain: llm-agent-infra
-    pitch: Detect stale retrieval corpora by tracking answer drift on a canary question set as source documents change, alerting before users see outdated answers.
-    scores: {originality: 4, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-012
-    title: Self-Healing Data Jobs
-    domain: llm-agent-infra
-    pitch: An LLM watchdog that diagnoses failing scheduled jobs, proposes a patch with a full audit trail, and applies it only inside a policy-defined blast radius.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 3}
-  - id: IDEA-013
-    title: Versioned Prompt Registry
-    domain: llm-agent-infra
-    pitch: Prompt packages with semver, dependency pins, and eval gates — publish, diff, and roll back prompts the way you manage libraries.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 5}
-
-  # ── ML Systems & Reliability ────────────────────────────────────────────
-  - id: IDEA-014
-    title: Single-Node Feature Store
-    domain: ml-systems
-    pitch: A DuckDB-backed feature store with point-in-time correctness and train/serve parity — the hardest feature-store guarantees without the infrastructure bill.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 3, reuse: 5}
-  - id: IDEA-015
-    title: Model Rollback Guard
-    domain: ml-systems
-    pitch: Shadow-deploy a new model behind the incumbent, compare live predictions, and auto-rollback on drift or degradation with an evidence report.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-016
-    title: Training Run Forensics
-    domain: ml-systems
-    pitch: Post-mortem tool that diffs two training runs across data fingerprints, hyperparameters, and loss curves, and ranks likely causes of a regression.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-017
-    title: CPU Distillation Bench
-    domain: ml-systems
-    pitch: Distill transformer models into CPU-friendly students and chart the accuracy/latency/size Pareto frontier — a systematic answer to "do I need a GPU for this?"
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-018
-    title: Embedding Drift Observatory
-    domain: ml-systems
-    pitch: Monitor embedding spaces over time with population-level statistics and drift alarms, catching silent retrieval degradation after upstream model swaps.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-019
-    title: Label-Noise Auditor
-    domain: ml-systems
-    pitch: Confident-learning-based scanner that ranks probably-mislabeled examples in any classification dataset and estimates the accuracy ceiling noise imposes.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-020
-    title: Hyperparameter Transfer Predictor
-    domain: ml-systems
-    pitch: Learn from your accumulated experiment logs to predict good hyperparameter starting points for a new dataset — meta-learning on your own history.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 4}
-  - id: IDEA-021
-    title: Dataset Diff
-    domain: ml-systems
-    pitch: Git-like semantic diffs for tabular data — schema changes, distribution shifts, row-level churn — rendered as a reviewable "data pull request."
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 5}
-  - id: IDEA-022
-    title: Online Learning A/B Harness
-    domain: ml-systems
-    pitch: Replay logged interaction streams to compare online-learning policies (bandits vs periodic retrain) with counterfactual estimators.
-    scores: {originality: 4, technical_depth: 5, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-023
-    title: Quantization Impact Scanner
-    domain: ml-systems
-    pitch: Automated sweep of quantization levels over a model zoo, reporting per-layer sensitivity and the exact samples whose predictions flip.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 4}
-  - id: IDEA-024
-    title: Cold-Start Recommender Lab
-    domain: ml-systems
-    pitch: A testbed comparing cold-start strategies (content priors, LLM-inferred preferences, contextual bandits) on MovieLens-class data — extends prior collaborative-filtering work.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 3}
-  - id: IDEA-025
-    title: Forecast Backtesting Engine
-    domain: ml-systems
-    pitch: Walk-forward backtesting with leakage guards, horizon-aware metrics, and champion/challenger tracking for time-series models — builds directly on the Rossmann forecasting work.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 4, reuse: 5}
-    flagship_candidate: true
-  - id: IDEA-026
-    title: Model Card Autogenerator
-    domain: ml-systems
-    pitch: Generate honest model cards straight from training artifacts — data lineage, eval slices, failure examples — so documentation can never drift from reality.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 5}
-
-  # ── Data Engineering & Pipelines ────────────────────────────────────────
-  - id: IDEA-027
-    title: Incremental Pipeline Compiler
-    domain: data-engineering
-    pitch: Compile declarative SQL/dataframe pipelines into DAGs that recompute only what changed, with automatic cache invalidation proofs.
-    scores: {originality: 4, technical_depth: 5, interview_value: 5, startup_potential: 3, reuse: 5}
-  - id: IDEA-028
-    title: Schema Evolution Registry
-    domain: data-engineering
-    pitch: Track every dataset schema over time, classify changes as safe or breaking, and generate migration stubs for downstream consumers.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-029
-    title: Data Contracts for Pandas
-    domain: data-engineering
-    pitch: Decorator-based contracts on dataframe functions (schema, nullability, distributions) enforced at runtime with readable violation reports.
-    scores: {originality: 3, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-030
-    title: Streaming Anomaly Sentinel
-    domain: data-engineering
-    pitch: Lightweight online anomaly detection over event streams with adaptive thresholds and explanation snippets, deployable as a sidecar process.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-031
-    title: Synthetic Data Twin
-    domain: data-engineering
-    pitch: Generate a statistically faithful synthetic twin of a private dataset (copulas + constraints) so pipelines and demos can be shared without the data.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-032
-    title: Late-Data Reconciler
-    domain: data-engineering
-    pitch: Handle late-arriving events gracefully — bitemporal storage, automatic backfill of affected aggregates, and an audit view of what changed retroactively.
-    scores: {originality: 4, technical_depth: 5, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-033
-    title: PII Scanner for Data Lakes
-    domain: data-engineering
-    pitch: Crawl parquet/CSV lakes, detect probable PII columns via patterns plus a local LLM, and emit a redaction plan with confidence levels.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-034
-    title: Laptop Query Cost Explorer
-    domain: data-engineering
-    pitch: Visualize DuckDB query plans with predicted vs actual cost, teaching query optimization interactively on real local data.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-035
-    title: CDC Replayer
-    domain: data-engineering
-    pitch: Capture change-data-capture streams and replay them at controllable speed into test environments — time-travel debugging for data infrastructure.
-    scores: {originality: 4, technical_depth: 5, interview_value: 4, startup_potential: 3, reuse: 3}
-  - id: IDEA-036
-    title: Notebook Lineage Extractor
-    domain: data-engineering
-    pitch: Statically analyze Jupyter notebooks to recover dataset lineage graphs — which cells read, transform, and write which data — and render the hidden pipeline.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-037
-    title: LLM-Suggested Data Expectations
-    domain: data-engineering
-    pitch: Profile a dataset and have an LLM propose validation rules a human approves — expectations bootstrapped in minutes instead of written by hand.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-038
-    title: Parquet Time Machine
-    domain: data-engineering
-    pitch: A snapshot-versioned parquet store with content-addressed chunks — `checkout` any dataset as of any date, with storage deduplication.
-    scores: {originality: 4, technical_depth: 5, interview_value: 4, startup_potential: 3, reuse: 4}
-
-  # ── Simulation & Modeling ───────────────────────────────────────────────
-  - id: IDEA-039
-    title: Market Microstructure Sim
-    domain: simulation
-    pitch: An order-book simulator with configurable agent populations (market makers, momentum traders) to study emergent phenomena like flash crashes.
-    scores: {originality: 3, technical_depth: 5, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-040
-    title: Epidemics on Graphs Lab
-    domain: simulation
-    pitch: Compare intervention strategies (targeted vaccination, lockdown timing) on realistic contact networks with uncertainty quantification.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 2, reuse: 3}
-  - id: IDEA-041
-    title: Queueing Playground
-    domain: simulation
-    pitch: Interactive queueing-theory simulator calibrated on real support-ticket data — staffing what-ifs with analytic formulas validated against simulation.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-042
-    title: Ride-Demand City Simulator
-    domain: simulation
-    pitch: Agent-based simulation of urban ride demand and driver repositioning, validated against real demand data — extends the Uber demand analytics work.
-    scores: {originality: 4, technical_depth: 5, interview_value: 4, startup_potential: 3, reuse: 3}
-  - id: IDEA-043
-    title: Agent-Based Economy Sandbox
-    domain: simulation
-    pitch: A toy economy where LLM-driven agents with distinct goals trade, price, and form expectations — observe inflation and bubbles emerge from prompts.
-    scores: {originality: 5, technical_depth: 4, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-044
-    title: Monte Carlo Risk Engine
-    domain: simulation
-    pitch: A composable Monte Carlo engine with variance-reduction techniques and copula-based dependencies, benchmarked on portfolio and project-schedule risk.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-045
-    title: CI System Digital Twin
-    domain: simulation
-    pitch: Model a CI pipeline (queue times, flake rates, machine pool) as a simulation to answer "what if we doubled runners?" before spending money.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 3}
-  - id: IDEA-046
-    title: Traffic-Light RL Gym
-    domain: simulation
-    pitch: A Gymnasium environment for multi-intersection traffic control with baselines from fixed-timing to multi-agent RL, plus a live traffic visualizer.
-    scores: {originality: 3, technical_depth: 5, interview_value: 4, startup_potential: 2, reuse: 3}
-  - id: IDEA-047
-    title: Bullwhip Effect Simulator
-    domain: simulation
-    pitch: Multi-echelon supply chain simulation demonstrating demand amplification, with an RL agent learning ordering policies that dampen it.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 2, reuse: 3}
-  - id: IDEA-048
-    title: Crowd Evacuation Modeler
-    domain: simulation
-    pitch: Social-force-model crowd simulation for room layouts — upload a floor plan, get evacuation-time distributions and bottleneck heatmaps.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 3, reuse: 2}
-  - id: IDEA-049
-    title: Battery Degradation Simulator
-    domain: simulation
-    pitch: Physics-informed ML model of lithium battery aging under configurable charge policies — compare fast-charging strategies by lifetime cost.
-    scores: {originality: 4, technical_depth: 4, interview_value: 3, startup_potential: 3, reuse: 2}
-  - id: IDEA-050
-    title: Season Simulator with Elo
-    domain: simulation
-    pitch: Simulate full sports seasons from Elo-style ratings with injury and form dynamics, publishing calibrated playoff probabilities and their track record.
-    scores: {originality: 2, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 3}
-
-  # ── Developer Tooling ───────────────────────────────────────────────────
-  - id: IDEA-051
-    title: Repo Health Scorer
-    domain: dev-tooling
-    pitch: Score any repository on maintainability signals (test freshness, doc drift, bus factor, dependency age) with trend lines, not just a snapshot.
-    scores: {originality: 3, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-052
-    title: Flaky Test Quarantiner
-    domain: dev-tooling
-    pitch: Detect statistically flaky tests from CI history, auto-quarantine them with an expiry, and rank root-cause hypotheses (timing, ordering, shared state).
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-053
-    title: API Diff Sentinel
-    domain: dev-tooling
-    pitch: Detect breaking changes in Python package APIs by diffing typed signatures across versions, generating upgrade notes consumers actually need.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-054
-    title: Commit Narrative Generator
-    domain: dev-tooling
-    pitch: Turn a repo's git history into a readable engineering story — milestones, dead ends, refactors — publishable as a technical blog post draft.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-055
-    title: Notebook-to-Package Refactorer
-    domain: dev-tooling
-    pitch: Semi-automatically convert exploratory notebooks into tested Python packages — dependency extraction, function boundaries, and generated smoke tests.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 5}
-  - id: IDEA-056
-    title: Dependency Risk Radar
-    domain: dev-tooling
-    pitch: Rank a project's dependencies by risk (maintenance activity, CVE history, transitive weight) and simulate the blast radius of removing each one.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-057
-    title: Code Tour Generator
-    domain: dev-tooling
-    pitch: Generate guided, ordered walkthroughs of a codebase for new contributors — entry points, data flow, and "read these 8 files in this order."
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-058
-    title: Benchmark-as-Code Framework
-    domain: dev-tooling
-    pitch: Declare performance benchmarks next to code with budgets and regression gates; history is committed so perf changes show up in code review.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-059
-    title: TODO Archaeologist
-    domain: dev-tooling
-    pitch: Mine, age, and blame every TODO/FIXME in a codebase, cluster them by theme, and estimate which ones actually correlate with later bugs.
-    scores: {originality: 4, technical_depth: 3, interview_value: 3, startup_potential: 2, reuse: 3}
-  - id: IDEA-060
-    title: Predictive Test Selector
-    domain: dev-tooling
-    pitch: Learn from CI history which tests a given diff is likely to break and run those first — measured as time-to-first-failure improvement.
-    scores: {originality: 4, technical_depth: 5, interview_value: 5, startup_potential: 3, reuse: 4}
-  - id: IDEA-061
-    title: Personal Error Search Engine
-    domain: dev-tooling
-    pitch: Index every error you've ever hit (terminal history, CI logs, notebook tracebacks) with how it was fixed, searchable semantically.
-    scores: {originality: 4, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 5}
-  - id: IDEA-062
-    title: Docstring Drift Detector
-    domain: dev-tooling
-    pitch: Flag functions whose docstrings no longer match their behavior by comparing docs against signatures, types, and test assertions.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-063
-    title: Personal Compliance Bot
-    domain: dev-tooling
-    pitch: Scan personal projects for license conflicts, secret leaks, and missing attributions before they go public — a pre-publication checklist that runs itself.
-    scores: {originality: 2, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 4}
-
-  # ── Applied ML Products ─────────────────────────────────────────────────
-  - id: IDEA-064
-    title: Personal Paper Radar
-    domain: applied-ml
-    pitch: An arXiv recommender fine-tuned on your own notes and starred repos, delivering a weekly digest with one-paragraph "why this matters to you" summaries.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 4}
-  - id: IDEA-065
-    title: Interview Drill Generator
-    domain: applied-ml
-    pitch: Generate system-design and code-review interview questions from your own repositories, so practice sessions target exactly what you built.
-    scores: {originality: 4, technical_depth: 3, interview_value: 5, startup_potential: 3, reuse: 4}
-  - id: IDEA-066
-    title: Spaced Repetition for Codebases
-    domain: applied-ml
-    pitch: Track which parts of your projects you're forgetting and schedule micro-reviews — Anki mechanics applied to code ownership.
-    scores: {originality: 5, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 4}
-  - id: IDEA-067
-    title: Lecture-to-Knowledge Compiler
-    domain: applied-ml
-    pitch: Turn recorded lectures/meetings into linked, structured notes with concept graphs and auto-generated quiz questions, all stored as local markdown.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-068
-    title: Resume Gap Analyzer
-    domain: applied-ml
-    pitch: Diff your project portfolio against scraped role requirements to find the highest-leverage missing skills, with project suggestions to close each gap.
-    scores: {originality: 3, technical_depth: 2, interview_value: 4, startup_potential: 4, reuse: 3}
-  - id: IDEA-069
-    title: Local-LLM Email Triage
-    domain: applied-ml
-    pitch: Fully local email classification and draft-reply suggestion via Ollama — privacy-preserving by construction, with a measured precision/recall report.
-    scores: {originality: 2, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 3}
-  - id: IDEA-070
-    title: Personal Finance Forecaster
-    domain: applied-ml
-    pitch: Probabilistic cash-flow forecasting from transaction history with scenario planning — "can I afford X in June?" answered with calibrated intervals.
-    scores: {originality: 2, technical_depth: 4, interview_value: 3, startup_potential: 4, reuse: 3}
-  - id: IDEA-071
-    title: Health Metrics Anomaly Coach
-    domain: applied-ml
-    pitch: Change-point detection over wearable exports (sleep, HR, steps) that explains deviations against your personal baseline rather than population norms.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 4, reuse: 3}
-  - id: IDEA-072
-    title: Study Schedule Optimizer
-    domain: applied-ml
-    pitch: Constraint optimization plus retention modeling to plan exam prep — allocates hours across topics by forgetting curves and deadline pressure.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 3, reuse: 3}
-  - id: IDEA-073
-    title: Job Market Trend Miner
-    domain: applied-ml
-    pitch: Longitudinal scraping and topic modeling of job postings to chart which skills are rising or fading per role and region, published as a live report.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 3}
-  - id: IDEA-074
-    title: Audience-Level Rewriter
-    domain: applied-ml
-    pitch: Rewrite technical documents to a target expertise level with terminology preservation guarantees — verified by readability metrics and term checksums.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-075
-    title: Screenshot-to-Data Extractor
-    domain: applied-ml
-    pitch: Turn screenshots of tables, dashboards, and receipts into typed, validated records with a local vision model — batch mode for folders of images.
-    scores: {originality: 2, technical_depth: 3, interview_value: 3, startup_potential: 4, reuse: 4}
-  - id: IDEA-076
-    title: Voice Journal Insights
-    domain: applied-ml
-    pitch: Local transcription of voice notes with longitudinal mood/topic analysis — a private, quantified diary with trend visualizations.
-    scores: {originality: 2, technical_depth: 3, interview_value: 2, startup_potential: 3, reuse: 3}
-
-  # ── Distributed Systems & Performance ───────────────────────────────────
-  - id: IDEA-077
-    title: Raft with Chaos Visualizer
-    domain: distributed-systems
-    pitch: Implement Raft from the paper, then attack it — partitions, clock skew, message loss — with a live visualization of elections and log repair.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 1, reuse: 3}
-  - id: IDEA-078
-    title: Consistent Hashing Playground
-    domain: distributed-systems
-    pitch: Interactive comparison of consistent hashing, rendezvous hashing, and jump hash under node churn — measure key movement and load skew live.
-    scores: {originality: 2, technical_depth: 4, interview_value: 4, startup_potential: 1, reuse: 3}
-  - id: IDEA-079
-    title: Exactly-Once Task Queue
-    domain: distributed-systems
-    pitch: A task queue with idempotency keys, visibility timeouts, and crash-recovery tests that demonstrate (and document) where exactly-once actually holds.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 2, reuse: 4}
-  - id: IDEA-080
-    title: Laptop MapReduce
-    domain: distributed-systems
-    pitch: A mini-MapReduce that distributes work across household machines over the LAN, with speculative execution and straggler handling like the original paper.
-    scores: {originality: 3, technical_depth: 5, interview_value: 4, startup_potential: 1, reuse: 3}
-  - id: IDEA-081
-    title: Vector Database from Scratch
-    domain: distributed-systems
-    pitch: Build HNSW indexing, filtered search, and WAL-backed persistence from first principles, benchmarked against FAISS/Chroma with honest tradeoff analysis.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 2, reuse: 5}
-    flagship_candidate: true
-  - id: IDEA-082
-    title: Rate Limiter Zoo
-    domain: distributed-systems
-    pitch: Every classic rate-limiting algorithm implemented against one interface, property-tested, and load-tested — the definitive comparison writeup.
-    scores: {originality: 2, technical_depth: 4, interview_value: 5, startup_potential: 1, reuse: 4}
-  - id: IDEA-083
-    title: WAL-Backed KV Store
-    domain: distributed-systems
-    pitch: A crash-safe key-value store with write-ahead logging, compaction, and snapshot isolation — kill -9 it mid-write and prove nothing is lost.
-    scores: {originality: 2, technical_depth: 5, interview_value: 5, startup_potential: 1, reuse: 4}
-  - id: IDEA-084
-    title: Gossip Protocol Visualizer
-    domain: distributed-systems
-    pitch: SWIM-style membership and failure detection across simulated nodes with a live animation of rumor spread and false-positive tuning.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 1, reuse: 3}
-  - id: IDEA-085
-    title: Bloom Filter Cascade Cache
-    domain: distributed-systems
-    pitch: A tiered cache using bloom-filter cascades to avoid backend lookups, with a workload generator quantifying when the trick wins and when it hurts.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 1, reuse: 3}
-  - id: IDEA-086
-    title: Async Backpressure Lab
-    domain: distributed-systems
-    pitch: Reproduce and fix backpressure failures in asyncio pipelines — unbounded queues, slow consumers, memory blowups — as a runnable casebook.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 1, reuse: 4}
-  - id: IDEA-087
-    title: Zero-Copy DataFrame Transport
-    domain: distributed-systems
-    pitch: Benchmark Arrow IPC, shared memory, and sockets for moving dataframes between processes — publish the definitive "fastest way to share a dataframe" guide.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 1, reuse: 4}
-  - id: IDEA-088
-    title: Distributed Lock Service
-    domain: distributed-systems
-    pitch: A lease-based lock service with fencing tokens plus a jepsen-lite test rig that demonstrates the classic split-brain failures it prevents.
-    scores: {originality: 3, technical_depth: 5, interview_value: 5, startup_potential: 1, reuse: 3}
-
-  # ── Human–AI Interfaces & Visualization ─────────────────────────────────
-  - id: IDEA-089
-    title: Project Evolution Visualizer
-    domain: human-ai-viz
-    pitch: Turn a git history into an animated, annotated timeline of a project's growth — modules appearing, refactors rippling — embeddable in portfolios.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-090
-    title: Agent Conversation Cartographer
-    domain: human-ai-viz
-    pitch: Map long multi-agent transcripts into navigable visual structures — topic threads, decision points, dead ends — instead of endless scrolling.
-    scores: {originality: 5, technical_depth: 4, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-091
-    title: Embedding Atlas Explorer
-    domain: human-ai-viz
-    pitch: A smooth, zoomable UMAP atlas of any embedding collection with lasso selection, cluster labeling by LLM, and drift overlays between snapshots.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 5}
-  - id: IDEA-092
-    title: Live Experiment Dashboard Kit
-    domain: human-ai-viz
-    pitch: A drop-in local dashboard that tails experiment JSONL logs into live charts — zero-server, zero-account alternative to hosted trackers.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 5}
-  - id: IDEA-093
-    title: Diff Storyteller
-    domain: human-ai-viz
-    pitch: Render large diffs as guided narratives — grouped by intent, ordered for review, with an LLM narrating why each hunk exists.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 4, reuse: 4}
-  - id: IDEA-094
-    title: Latency Budget Visualizer
-    domain: human-ai-viz
-    pitch: Declare an end-to-end latency budget across services and render live waterfall views showing which stage is spending whose budget.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-095
-    title: Tabular Model Explainer Studio
-    domain: human-ai-viz
-    pitch: Interactive SHAP/counterfactual exploration for gradient-boosted models — drag feature values and watch predictions and explanations update live.
-    scores: {originality: 3, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-096
-    title: Knowledge Graph Notebook
-    domain: human-ai-viz
-    pitch: Markdown notes that compile into a queryable knowledge graph — typed links, graph queries in prose, and visual neighborhood browsing.
-    scores: {originality: 3, technical_depth: 4, interview_value: 3, startup_potential: 4, reuse: 5}
-  - id: IDEA-097
-    title: Terminal Dashboard Kit
-    domain: human-ai-viz
-    pitch: A Textual-based toolkit for building rich terminal dashboards from YAML specs — charts, tables, and logs without leaving the shell.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 3, reuse: 5}
-  - id: IDEA-098
-    title: Counterfactual Decision Explorer
-    domain: human-ai-viz
-    pitch: For any classifier decision, generate and visualize the nearest counterfactuals — "what is the smallest change that flips this outcome?" as a UI primitive.
-    scores: {originality: 4, technical_depth: 4, interview_value: 4, startup_potential: 3, reuse: 4}
-  - id: IDEA-099
-    title: Repo Dependency Galaxy
-    domain: human-ai-viz
-    pitch: Force-directed 3D visualization of a codebase's import graph over time — watch coupling grow and refactors carve module boundaries.
-    scores: {originality: 3, technical_depth: 3, interview_value: 3, startup_potential: 2, reuse: 4}
-  - id: IDEA-100
-    title: One-Page Paper Generator
-    domain: human-ai-viz
-    pitch: Compile an experiment log and repo into a one-page, poster-style research summary — figures, method, results — regenerated on every push.
-    scores: {originality: 4, technical_depth: 3, interview_value: 4, startup_potential: 3, reuse: 5}
+- id: IDEA-001
+  title: Agent Trace Debugger
+  domain: llm-agent-infra
+  pitch: Record, replay, and diff multi-step agent executions — step through tool calls like a debugger,
+    pin a failing step, and re-run from it with a modified prompt or model.
+  scores:
+    originality: 5
+    technical_depth: 4
+    interview_value: 5
+    startup_potential: 4
+    reuse: 5
+  flagship_candidate: true
+- id: IDEA-002
+  title: Prompt Regression CI
+  domain: llm-agent-infra
+  pitch: A test harness that treats prompts like code — semantic-diff model outputs across prompt edits
+    and model upgrades, gate merges on eval scores.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 4
+    reuse: 5
+- id: IDEA-003
+  title: Difficulty-Aware Model Router
+  domain: llm-agent-infra
+  pitch: Route each query between a local Ollama model and a cloud model by predicted difficulty and cost
+    budget, learning the routing policy from outcome feedback.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-004
+  title: Context Compiler
+  domain: llm-agent-infra
+  pitch: A deterministic "linker" that assembles LLM context from code, docs, and memory under a token
+    budget, with explicit include/priority rules instead of ad-hoc retrieval.
+  scores:
+    originality: 5
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-005
+  title: Tool-Schema Fuzzer
+  domain: llm-agent-infra
+  pitch: Fuzz an agent's tool definitions with adversarial inputs and malformed arguments to find brittle
+    schemas and unhandled tool errors before production.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-006
+  title: Decaying Memory Engine
+  domain: llm-agent-infra
+  pitch: File-backed agent memory with recency/importance decay and consolidation passes — memories merge,
+    fade, and strengthen like a spaced-repetition system for agents.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-007
+  title: LLM Cost Profiler
+  domain: llm-agent-infra
+  pitch: Flame-graph-style attribution of token spend across an agent pipeline — see which subagent, prompt
+    section, or retry loop is burning the budget.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-008
+  title: Structured-Output Proving Ground
+  domain: llm-agent-infra
+  pitch: Benchmark grammar-constrained decoding, JSON-schema modes, and retry strategies across providers
+    to quantify which structured-output method fails least per task type.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 4
+- id: IDEA-009
+  title: Agent Sandbox Arena
+  domain: llm-agent-infra
+  pitch: Reproducible containerized environments with seeded bugs where coding agents compete — measure
+    fix rate, cost, and collateral damage per model.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-010
+  title: Heterogeneous Agent Negotiation Testbed
+  domain: llm-agent-infra
+  pitch: Study protocols for splitting a task between a strong cloud model and weak local models — who
+    plans, who executes, and when escalation pays off.
+  scores:
+    originality: 5
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-011
+  title: RAG Freshness Monitor
+  domain: llm-agent-infra
+  pitch: Detect stale retrieval corpora by tracking answer drift on a canary question set as source documents
+    change, alerting before users see outdated answers.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-012
+  title: Self-Healing Data Jobs
+  domain: llm-agent-infra
+  pitch: An LLM watchdog that diagnoses failing scheduled jobs, proposes a patch with a full audit trail,
+    and applies it only inside a policy-defined blast radius.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-013
+  title: Versioned Prompt Registry
+  domain: llm-agent-infra
+  pitch: Prompt packages with semver, dependency pins, and eval gates — publish, diff, and roll back prompts
+    the way you manage libraries.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 5
+- id: IDEA-014
+  title: Single-Node Feature Store
+  domain: ml-systems
+  pitch: A DuckDB-backed feature store with point-in-time correctness and train/serve parity — the hardest
+    feature-store guarantees without the infrastructure bill.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-015
+  title: Model Rollback Guard
+  domain: ml-systems
+  pitch: Shadow-deploy a new model behind the incumbent, compare live predictions, and auto-rollback on
+    drift or degradation with an evidence report.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-016
+  title: Training Run Forensics
+  domain: ml-systems
+  pitch: Post-mortem tool that diffs two training runs across data fingerprints, hyperparameters, and
+    loss curves, and ranks likely causes of a regression.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-017
+  title: CPU Distillation Bench
+  domain: ml-systems
+  pitch: Distill transformer models into CPU-friendly students and chart the accuracy/latency/size Pareto
+    frontier — a systematic answer to "do I need a GPU for this?"
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-018
+  title: Embedding Drift Observatory
+  domain: ml-systems
+  pitch: Monitor embedding spaces over time with population-level statistics and drift alarms, catching
+    silent retrieval degradation after upstream model swaps.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-019
+  title: Label-Noise Auditor
+  domain: ml-systems
+  pitch: Confident-learning-based scanner that ranks probably-mislabeled examples in any classification
+    dataset and estimates the accuracy ceiling noise imposes.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-020
+  title: Hyperparameter Transfer Predictor
+  domain: ml-systems
+  pitch: Learn from your accumulated experiment logs to predict good hyperparameter starting points for
+    a new dataset — meta-learning on your own history.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 4
+- id: IDEA-021
+  title: Dataset Diff
+  domain: ml-systems
+  pitch: Git-like semantic diffs for tabular data — schema changes, distribution shifts, row-level churn
+    — rendered as a reviewable "data pull request."
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 5
+- id: IDEA-022
+  title: Online Learning A/B Harness
+  domain: ml-systems
+  pitch: Replay logged interaction streams to compare online-learning policies (bandits vs periodic retrain)
+    with counterfactual estimators.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-023
+  title: Quantization Impact Scanner
+  domain: ml-systems
+  pitch: Automated sweep of quantization levels over a model zoo, reporting per-layer sensitivity and
+    the exact samples whose predictions flip.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 4
+- id: IDEA-024
+  title: Cold-Start Recommender Lab
+  domain: ml-systems
+  pitch: A testbed comparing cold-start strategies (content priors, LLM-inferred preferences, contextual
+    bandits) on MovieLens-class data — extends prior collaborative-filtering work.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-025
+  title: Forecast Backtesting Engine
+  domain: ml-systems
+  pitch: Walk-forward backtesting with leakage guards, horizon-aware metrics, and champion/challenger
+    tracking for time-series models — builds directly on the Rossmann forecasting work.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 4
+    reuse: 5
+  flagship_candidate: true
+- id: IDEA-026
+  title: Model Card Autogenerator
+  domain: ml-systems
+  pitch: Generate honest model cards straight from training artifacts — data lineage, eval slices, failure
+    examples — so documentation can never drift from reality.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-027
+  title: Incremental Pipeline Compiler
+  domain: data-engineering
+  pitch: Compile declarative SQL/dataframe pipelines into DAGs that recompute only what changed, with
+    automatic cache invalidation proofs.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-028
+  title: Schema Evolution Registry
+  domain: data-engineering
+  pitch: Track every dataset schema over time, classify changes as safe or breaking, and generate migration
+    stubs for downstream consumers.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-029
+  title: Data Contracts for Pandas
+  domain: data-engineering
+  pitch: Decorator-based contracts on dataframe functions (schema, nullability, distributions) enforced
+    at runtime with readable violation reports.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-030
+  title: Streaming Anomaly Sentinel
+  domain: data-engineering
+  pitch: Lightweight online anomaly detection over event streams with adaptive thresholds and explanation
+    snippets, deployable as a sidecar process.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-031
+  title: Synthetic Data Twin
+  domain: data-engineering
+  pitch: Generate a statistically faithful synthetic twin of a private dataset (copulas + constraints)
+    so pipelines and demos can be shared without the data.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-032
+  title: Late-Data Reconciler
+  domain: data-engineering
+  pitch: Handle late-arriving events gracefully — bitemporal storage, automatic backfill of affected aggregates,
+    and an audit view of what changed retroactively.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-033
+  title: PII Scanner for Data Lakes
+  domain: data-engineering
+  pitch: Crawl parquet/CSV lakes, detect probable PII columns via patterns plus a local LLM, and emit
+    a redaction plan with confidence levels.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-034
+  title: Laptop Query Cost Explorer
+  domain: data-engineering
+  pitch: Visualize DuckDB query plans with predicted vs actual cost, teaching query optimization interactively
+    on real local data.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-035
+  title: CDC Replayer
+  domain: data-engineering
+  pitch: Capture change-data-capture streams and replay them at controllable speed into test environments
+    — time-travel debugging for data infrastructure.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-036
+  title: Notebook Lineage Extractor
+  domain: data-engineering
+  pitch: Statically analyze Jupyter notebooks to recover dataset lineage graphs — which cells read, transform,
+    and write which data — and render the hidden pipeline.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-037
+  title: LLM-Suggested Data Expectations
+  domain: data-engineering
+  pitch: Profile a dataset and have an LLM propose validation rules a human approves — expectations bootstrapped
+    in minutes instead of written by hand.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-038
+  title: Parquet Time Machine
+  domain: data-engineering
+  pitch: A snapshot-versioned parquet store with content-addressed chunks — `checkout` any dataset as
+    of any date, with storage deduplication.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-039
+  title: Market Microstructure Sim
+  domain: simulation
+  pitch: An order-book simulator with configurable agent populations (market makers, momentum traders)
+    to study emergent phenomena like flash crashes.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-040
+  title: Epidemics on Graphs Lab
+  domain: simulation
+  pitch: Compare intervention strategies (targeted vaccination, lockdown timing) on realistic contact
+    networks with uncertainty quantification.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-041
+  title: Queueing Playground
+  domain: simulation
+  pitch: Interactive queueing-theory simulator calibrated on real support-ticket data — staffing what-ifs
+    with analytic formulas validated against simulation.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-042
+  title: Ride-Demand City Simulator
+  domain: simulation
+  pitch: Agent-based simulation of urban ride demand and driver repositioning, validated against real
+    demand data — extends the Uber demand analytics work.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-043
+  title: Agent-Based Economy Sandbox
+  domain: simulation
+  pitch: A toy economy where LLM-driven agents with distinct goals trade, price, and form expectations
+    — observe inflation and bubbles emerge from prompts.
+  scores:
+    originality: 5
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-044
+  title: Monte Carlo Risk Engine
+  domain: simulation
+  pitch: A composable Monte Carlo engine with variance-reduction techniques and copula-based dependencies,
+    benchmarked on portfolio and project-schedule risk.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-045
+  title: CI System Digital Twin
+  domain: simulation
+  pitch: Model a CI pipeline (queue times, flake rates, machine pool) as a simulation to answer "what
+    if we doubled runners?" before spending money.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-046
+  title: Traffic-Light RL Gym
+  domain: simulation
+  pitch: A Gymnasium environment for multi-intersection traffic control with baselines from fixed-timing
+    to multi-agent RL, plus a live traffic visualizer.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-047
+  title: Bullwhip Effect Simulator
+  domain: simulation
+  pitch: Multi-echelon supply chain simulation demonstrating demand amplification, with an RL agent learning
+    ordering policies that dampen it.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-048
+  title: Crowd Evacuation Modeler
+  domain: simulation
+  pitch: Social-force-model crowd simulation for room layouts — upload a floor plan, get evacuation-time
+    distributions and bottleneck heatmaps.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 3
+    reuse: 2
+- id: IDEA-049
+  title: Battery Degradation Simulator
+  domain: simulation
+  pitch: Physics-informed ML model of lithium battery aging under configurable charge policies — compare
+    fast-charging strategies by lifetime cost.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 3
+    reuse: 2
+- id: IDEA-050
+  title: Season Simulator with Elo
+  domain: simulation
+  pitch: Simulate full sports seasons from Elo-style ratings with injury and form dynamics, publishing
+    calibrated playoff probabilities and their track record.
+  scores:
+    originality: 2
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-051
+  title: Repo Health Scorer
+  domain: dev-tooling
+  pitch: Score any repository on maintainability signals (test freshness, doc drift, bus factor, dependency
+    age) with trend lines, not just a snapshot.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-052
+  title: Flaky Test Quarantiner
+  domain: dev-tooling
+  pitch: Detect statistically flaky tests from CI history, auto-quarantine them with an expiry, and rank
+    root-cause hypotheses (timing, ordering, shared state).
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-053
+  title: API Diff Sentinel
+  domain: dev-tooling
+  pitch: Detect breaking changes in Python package APIs by diffing typed signatures across versions, generating
+    upgrade notes consumers actually need.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-054
+  title: Commit Narrative Generator
+  domain: dev-tooling
+  pitch: Turn a repo's git history into a readable engineering story — milestones, dead ends, refactors
+    — publishable as a technical blog post draft.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-055
+  title: Notebook-to-Package Refactorer
+  domain: dev-tooling
+  pitch: Semi-automatically convert exploratory notebooks into tested Python packages — dependency extraction,
+    function boundaries, and generated smoke tests.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 5
+- id: IDEA-056
+  title: Dependency Risk Radar
+  domain: dev-tooling
+  pitch: Rank a project's dependencies by risk (maintenance activity, CVE history, transitive weight)
+    and simulate the blast radius of removing each one.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-057
+  title: Code Tour Generator
+  domain: dev-tooling
+  pitch: Generate guided, ordered walkthroughs of a codebase for new contributors — entry points, data
+    flow, and "read these 8 files in this order."
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-058
+  title: Benchmark-as-Code Framework
+  domain: dev-tooling
+  pitch: Declare performance benchmarks next to code with budgets and regression gates; history is committed
+    so perf changes show up in code review.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-059
+  title: TODO Archaeologist
+  domain: dev-tooling
+  pitch: Mine, age, and blame every TODO/FIXME in a codebase, cluster them by theme, and estimate which
+    ones actually correlate with later bugs.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 2
+    reuse: 3
+- id: IDEA-060
+  title: Predictive Test Selector
+  domain: dev-tooling
+  pitch: Learn from CI history which tests a given diff is likely to break and run those first — measured
+    as time-to-first-failure improvement.
+  scores:
+    originality: 4
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-061
+  title: Personal Error Search Engine
+  domain: dev-tooling
+  pitch: Index every error you've ever hit (terminal history, CI logs, notebook tracebacks) with how it
+    was fixed, searchable semantically.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-062
+  title: Docstring Drift Detector
+  domain: dev-tooling
+  pitch: Flag functions whose docstrings no longer match their behavior by comparing docs against signatures,
+    types, and test assertions.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-063
+  title: Personal Compliance Bot
+  domain: dev-tooling
+  pitch: Scan personal projects for license conflicts, secret leaks, and missing attributions before they
+    go public — a pre-publication checklist that runs itself.
+  scores:
+    originality: 2
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-064
+  title: Personal Paper Radar
+  domain: applied-ml
+  pitch: An arXiv recommender fine-tuned on your own notes and starred repos, delivering a weekly digest
+    with one-paragraph "why this matters to you" summaries.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-065
+  title: Interview Drill Generator
+  domain: applied-ml
+  pitch: Generate system-design and code-review interview questions from your own repositories, so practice
+    sessions target exactly what you built.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 5
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-066
+  title: Spaced Repetition for Codebases
+  domain: applied-ml
+  pitch: Track which parts of your projects you're forgetting and schedule micro-reviews — Anki mechanics
+    applied to code ownership.
+  scores:
+    originality: 5
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-067
+  title: Lecture-to-Knowledge Compiler
+  domain: applied-ml
+  pitch: Turn recorded lectures/meetings into linked, structured notes with concept graphs and auto-generated
+    quiz questions, all stored as local markdown.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-068
+  title: Resume Gap Analyzer
+  domain: applied-ml
+  pitch: Diff your project portfolio against scraped role requirements to find the highest-leverage missing
+    skills, with project suggestions to close each gap.
+  scores:
+    originality: 3
+    technical_depth: 2
+    interview_value: 4
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-069
+  title: Local-LLM Email Triage
+  domain: applied-ml
+  pitch: Fully local email classification and draft-reply suggestion via Ollama — privacy-preserving by
+    construction, with a measured precision/recall report.
+  scores:
+    originality: 2
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-070
+  title: Personal Finance Forecaster
+  domain: applied-ml
+  pitch: Probabilistic cash-flow forecasting from transaction history with scenario planning — "can I
+    afford X in June?" answered with calibrated intervals.
+  scores:
+    originality: 2
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-071
+  title: Health Metrics Anomaly Coach
+  domain: applied-ml
+  pitch: Change-point detection over wearable exports (sleep, HR, steps) that explains deviations against
+    your personal baseline rather than population norms.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-072
+  title: Study Schedule Optimizer
+  domain: applied-ml
+  pitch: Constraint optimization plus retention modeling to plan exam prep — allocates hours across topics
+    by forgetting curves and deadline pressure.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-073
+  title: Job Market Trend Miner
+  domain: applied-ml
+  pitch: Longitudinal scraping and topic modeling of job postings to chart which skills are rising or
+    fading per role and region, published as a live report.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 3
+- id: IDEA-074
+  title: Audience-Level Rewriter
+  domain: applied-ml
+  pitch: Rewrite technical documents to a target expertise level with terminology preservation guarantees
+    — verified by readability metrics and term checksums.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-075
+  title: Screenshot-to-Data Extractor
+  domain: applied-ml
+  pitch: Turn screenshots of tables, dashboards, and receipts into typed, validated records with a local
+    vision model — batch mode for folders of images.
+  scores:
+    originality: 2
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-076
+  title: Voice Journal Insights
+  domain: applied-ml
+  pitch: Local transcription of voice notes with longitudinal mood/topic analysis — a private, quantified
+    diary with trend visualizations.
+  scores:
+    originality: 2
+    technical_depth: 3
+    interview_value: 2
+    startup_potential: 3
+    reuse: 3
+- id: IDEA-077
+  title: Raft with Chaos Visualizer
+  domain: distributed-systems
+  pitch: Implement Raft from the paper, then attack it — partitions, clock skew, message loss — with a
+    live visualization of elections and log repair.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-078
+  title: Consistent Hashing Playground
+  domain: distributed-systems
+  pitch: Interactive comparison of consistent hashing, rendezvous hashing, and jump hash under node churn
+    — measure key movement and load skew live.
+  scores:
+    originality: 2
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-079
+  title: Exactly-Once Task Queue
+  domain: distributed-systems
+  pitch: A task queue with idempotency keys, visibility timeouts, and crash-recovery tests that demonstrate
+    (and document) where exactly-once actually holds.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 2
+    reuse: 4
+- id: IDEA-080
+  title: Laptop MapReduce
+  domain: distributed-systems
+  pitch: A mini-MapReduce that distributes work across household machines over the LAN, with speculative
+    execution and straggler handling like the original paper.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 4
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-081
+  title: Vector Database from Scratch
+  domain: distributed-systems
+  pitch: Build HNSW indexing, filtered search, and WAL-backed persistence from first principles, benchmarked
+    against FAISS/Chroma with honest tradeoff analysis.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 2
+    reuse: 5
+  flagship_candidate: true
+- id: IDEA-082
+  title: Rate Limiter Zoo
+  domain: distributed-systems
+  pitch: Every classic rate-limiting algorithm implemented against one interface, property-tested, and
+    load-tested — the definitive comparison writeup.
+  scores:
+    originality: 2
+    technical_depth: 4
+    interview_value: 5
+    startup_potential: 1
+    reuse: 4
+  flagship_candidate: false
+  status: promoted
+- id: IDEA-083
+  title: WAL-Backed KV Store
+  domain: distributed-systems
+  pitch: A crash-safe key-value store with write-ahead logging, compaction, and snapshot isolation — kill
+    -9 it mid-write and prove nothing is lost.
+  scores:
+    originality: 2
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 1
+    reuse: 4
+- id: IDEA-084
+  title: Gossip Protocol Visualizer
+  domain: distributed-systems
+  pitch: SWIM-style membership and failure detection across simulated nodes with a live animation of rumor
+    spread and false-positive tuning.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-085
+  title: Bloom Filter Cascade Cache
+  domain: distributed-systems
+  pitch: A tiered cache using bloom-filter cascades to avoid backend lookups, with a workload generator
+    quantifying when the trick wins and when it hurts.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-086
+  title: Async Backpressure Lab
+  domain: distributed-systems
+  pitch: Reproduce and fix backpressure failures in asyncio pipelines — unbounded queues, slow consumers,
+    memory blowups — as a runnable casebook.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 1
+    reuse: 4
+- id: IDEA-087
+  title: Zero-Copy DataFrame Transport
+  domain: distributed-systems
+  pitch: Benchmark Arrow IPC, shared memory, and sockets for moving dataframes between processes — publish
+    the definitive "fastest way to share a dataframe" guide.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 1
+    reuse: 4
+- id: IDEA-088
+  title: Distributed Lock Service
+  domain: distributed-systems
+  pitch: A lease-based lock service with fencing tokens plus a jepsen-lite test rig that demonstrates
+    the classic split-brain failures it prevents.
+  scores:
+    originality: 3
+    technical_depth: 5
+    interview_value: 5
+    startup_potential: 1
+    reuse: 3
+- id: IDEA-089
+  title: Project Evolution Visualizer
+  domain: human-ai-viz
+  pitch: Turn a git history into an animated, annotated timeline of a project's growth — modules appearing,
+    refactors rippling — embeddable in portfolios.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-090
+  title: Agent Conversation Cartographer
+  domain: human-ai-viz
+  pitch: Map long multi-agent transcripts into navigable visual structures — topic threads, decision points,
+    dead ends — instead of endless scrolling.
+  scores:
+    originality: 5
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-091
+  title: Embedding Atlas Explorer
+  domain: human-ai-viz
+  pitch: A smooth, zoomable UMAP atlas of any embedding collection with lasso selection, cluster labeling
+    by LLM, and drift overlays between snapshots.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-092
+  title: Live Experiment Dashboard Kit
+  domain: human-ai-viz
+  pitch: A drop-in local dashboard that tails experiment JSONL logs into live charts — zero-server, zero-account
+    alternative to hosted trackers.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-093
+  title: Diff Storyteller
+  domain: human-ai-viz
+  pitch: Render large diffs as guided narratives — grouped by intent, ordered for review, with an LLM
+    narrating why each hunk exists.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 4
+    reuse: 4
+- id: IDEA-094
+  title: Latency Budget Visualizer
+  domain: human-ai-viz
+  pitch: Declare an end-to-end latency budget across services and render live waterfall views showing
+    which stage is spending whose budget.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-095
+  title: Tabular Model Explainer Studio
+  domain: human-ai-viz
+  pitch: Interactive SHAP/counterfactual exploration for gradient-boosted models — drag feature values
+    and watch predictions and explanations update live.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-096
+  title: Knowledge Graph Notebook
+  domain: human-ai-viz
+  pitch: Markdown notes that compile into a queryable knowledge graph — typed links, graph queries in
+    prose, and visual neighborhood browsing.
+  scores:
+    originality: 3
+    technical_depth: 4
+    interview_value: 3
+    startup_potential: 4
+    reuse: 5
+- id: IDEA-097
+  title: Terminal Dashboard Kit
+  domain: human-ai-viz
+  pitch: A Textual-based toolkit for building rich terminal dashboards from YAML specs — charts, tables,
+    and logs without leaving the shell.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 3
+    reuse: 5
+- id: IDEA-098
+  title: Counterfactual Decision Explorer
+  domain: human-ai-viz
+  pitch: For any classifier decision, generate and visualize the nearest counterfactuals — "what is the
+    smallest change that flips this outcome?" as a UI primitive.
+  scores:
+    originality: 4
+    technical_depth: 4
+    interview_value: 4
+    startup_potential: 3
+    reuse: 4
+- id: IDEA-099
+  title: Repo Dependency Galaxy
+  domain: human-ai-viz
+  pitch: Force-directed 3D visualization of a codebase's import graph over time — watch coupling grow
+    and refactors carve module boundaries.
+  scores:
+    originality: 3
+    technical_depth: 3
+    interview_value: 3
+    startup_potential: 2
+    reuse: 4
+- id: IDEA-100
+  title: One-Page Paper Generator
+  domain: human-ai-viz
+  pitch: Compile an experiment log and repo into a one-page, poster-style research summary — figures,
+    method, results — regenerated on every push.
+  scores:
+    originality: 4
+    technical_depth: 3
+    interview_value: 4
+    startup_potential: 3
+    reuse: 5

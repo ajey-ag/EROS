@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ratezoo"
+version = "0.1.0"
+description = "Classic rate-limiting algorithms behind one interface, property-tested and benchmarked."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest", "hypothesis"]
+
+[tool.setuptools.packages.find]
+include = ["ratezoo*"]

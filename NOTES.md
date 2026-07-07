@@ -5,22 +5,25 @@ this file is the index and the current state of the world.
 
 ## Current state
 
-- **Stage:** 3 (working pipeline) — in progress this session
-- **Next up:** Stage 4 — use EROS to produce the first flagship project from the idea map shortlist
+- **Stage:** 4 — first project (rate-limiter-zoo) complete, 8/8 tasks, 62 tests green
+- **Next up:** second flagship project from the idea map shortlist; teach the
+  dispatch provider to pre-authorize `python`/`pip`/`pytest` in headless sessions
+  (the RUN-001 lesson)
 
 ## Roadmap position
 
 | Stage | What | Status |
 |---|---|---|
-| 1 | Idea map: ~100 original ideas, scored across 5 axes | in progress |
-| 2 | Shared infrastructure design (`docs/ARCHITECTURE.md`) | in progress |
-| 3 | EROS orchestration pipeline (CLI, providers, dispatch) | in progress |
-| 4 | First 3 flagship projects built *through* EROS | not started |
+| 1 | Idea map: ~100 original ideas, scored across 5 axes | done (rescore committed 2026-07-07) |
+| 2 | Shared infrastructure design (`docs/ARCHITECTURE.md`) | done |
+| 3 | EROS orchestration pipeline (CLI, providers, dispatch) | working end to end |
+| 4 | First 3 flagship projects built *through* EROS | 1/3 — rate-limiter-zoo complete |
 | 5 | Portfolio polish: blogs, demos, papers; web dashboard + desktop app | not started |
 
 ## Session journal
 
 - [2026-07-07 — Session 1: bootstrap](docs/notes/2026-07-07-session-1.md) — repo scaffold, idea map, architecture doc, Stage 3 pipeline
+- [2026-07-07 — Session 2: rate-limiter-zoo built end to end](docs/notes/2026-07-07-session-2.md) — TASK-001 verified, tasks 2–8 implemented, bench + report, gitignore fix
 
 ## Decisions log
 
