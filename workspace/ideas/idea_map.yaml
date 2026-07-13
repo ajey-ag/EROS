@@ -40,6 +40,7 @@ ideas:
     startup_potential: 4
     reuse: 5
   flagship_candidate: true
+  status: promoted
 - id: IDEA-002
   title: Prompt Regression CI
   domain: llm-agent-infra
@@ -305,6 +306,7 @@ ideas:
     startup_potential: 4
     reuse: 5
   flagship_candidate: true
+  status: promoted
 - id: IDEA-026
   title: Model Card Autogenerator
   domain: ml-systems
