@@ -101,19 +101,26 @@ automatically, and diffs runs — plus the simulation runtime shared by the
 simulation-domain ideas (IDEA-039..050). This should be built *through* EROS as an
 early flagship exercise.
 
-### 5. Visualization layer — [ships later]
+### 5. Visualization layer — [ships now: Phases A & B] / [later: richer views]
 
-Deliberately last: every view renders from files the other engines already write,
-so nothing needs re-architecting.
+Every view renders from files the other engines already write — no
+re-architecting was needed to add this layer on top of Stage 3.
 
-1. **Phase A — local web dashboard:** FastAPI serving the workspace as JSON + a
-   single-page UI (project lifecycle board, run timeline, experiment charts).
-   Reuses `store.py` untouched.
-2. **Phase B — personal desktop app:** the same FastAPI core wrapped in pywebview
-   (or Tauri if a smaller footprint is wanted) — one window, tray icon, tailored to
-   a single user's workflow. CLI, web, and desktop are three shells over one engine.
-3. Project-evolution animation (IDEA-089) and experiment dashboards (IDEA-092) both
-   graduate into this layer.
+1. **Phase A — local web dashboard [shipped]:** `src/eros/dashboard/api.py` is a
+   FastAPI app exposing `workspace/` read-only as JSON (`/api/ideas`,
+   `/api/projects`, `/api/projects/{slug}`, `/api/projects/{slug}/runs/{id}`),
+   reusing `Store` untouched — the dashboard can never drift from what the CLI
+   reports. `src/eros/dashboard/static/index.html` is a single self-contained
+   page (no build step) with a project lifecycle board (stat tiles + status
+   badges + run table) and an idea-map browser. Launch with `eros dashboard`
+   (opens `http://127.0.0.1:8756`).
+2. **Phase B — personal desktop app [shipped]:** `eros desktop` runs the same
+   FastAPI app in a background thread and opens it in a native window via
+   pywebview (`pip install -e .[desktop]`) — one window, no browser chrome, CLI
+   and desktop share one engine and one static UI.
+3. **Later:** run timelines/experiment charts beyond the current table view,
+   project-evolution animation (IDEA-089), and a tray-icon/always-running mode
+   for the desktop app graduate into this layer as needed.
 
 ## Directory contract (normative)
 

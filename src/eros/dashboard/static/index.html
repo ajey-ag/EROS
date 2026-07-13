@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EROS Dashboard</title>
+<style>
+  :root {
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --series-1: #2a78d6; /* blue */
+    --series-2: #1baf7a; /* aqua */
+    --series-3: #eda100; /* yellow */
+    --series-4: #4a3aa7; /* violet */
+    --status-good: #0ca30c;
+    --status-warning: #fab219;
+    --status-serious: #ec835a;
+    --status-critical: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --series-1: #3987e5;
+      --series-2: #199e70;
+      --series-3: #c98500;
+      --series-4: #9085e9;
+      --status-good: #0ca30c;
+      --status-warning: #fab219;
+      --status-serious: #ec835a;
+      --status-critical: #d03b3b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  header {
+    padding: 20px 28px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  header h1 { font-size: 18px; margin: 0; font-weight: 700; }
+  header .tag { color: var(--text-muted); font-size: 13px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 28px 64px; }
+  section { margin-bottom: 36px; }
+  section h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-secondary); margin: 0 0 12px;
+  }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .tile .value { font-size: 26px; font-weight: 700; font-variant-numeric: proportional-nums; }
+  .tile .label { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface-1);
+          border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--gridline); font-size: 13px; }
+  th { color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase;
+       letter-spacing: 0.03em; }
+  tr:last-child td { border-bottom: none; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover { background: color-mix(in srgb, var(--series-1) 6%, transparent); }
+  .num { font-variant-numeric: tabular-nums; text-align: right; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge.status-done, .badge.status-approve, .badge.status-complete, .badge.status-succeeded { color: var(--status-good); background: color-mix(in srgb, var(--status-good) 14%, transparent); }
+  .badge.status-in_progress, .badge.status-building, .badge.status-running { color: var(--series-3); background: color-mix(in srgb, var(--series-3) 16%, transparent); }
+  .badge.status-needs_review, .badge.status-decomposed, .badge.status-pending { color: var(--series-1); background: color-mix(in srgb, var(--series-1) 14%, transparent); }
+  .badge.status-needs_revision, .badge.status-revise, .badge.status-chartered { color: var(--status-warning); background: color-mix(in srgb, var(--status-warning) 18%, transparent); }
+  .badge.status-blocked, .badge.status-failed { color: var(--status-critical); background: color-mix(in srgb, var(--status-critical) 14%, transparent); }
+  .badge.status-todo { color: var(--text-muted); background: color-mix(in srgb, var(--text-muted) 14%, transparent); }
+  .muted { color: var(--text-muted); }
+  .flag { color: var(--status-critical); font-weight: 700; font-size: 11px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab.active { color: var(--text-primary); border-bottom-color: var(--series-1); }
+  .view { display: none; }
+  .view.active { display: block; }
+  .back-link { color: var(--series-1); cursor: pointer; font-size: 13px; margin-bottom: 12px; display: inline-block; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 720px) { .detail-grid { grid-template-columns: 1fr; } }
+  pre { white-space: pre-wrap; font-size: 12px; background: var(--surface-1); border: 1px solid var(--border);
+        border-radius: 8px; padding: 10px 12px; max-height: 320px; overflow: auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>EROS</h1>
+  <span class="tag">Engineer's Research Operating System — local dashboard</span>
+</header>
+<main>
+  <div class="tabs">
+    <div class="tab active" data-tab="projects">Projects</div>
+    <div class="tab" data-tab="ideas">Idea Map</div>
+  </div>
+
+  <div id="view-projects" class="view active"></div>
+  <div id="view-ideas" class="view"></div>
+</main>
+
+<script>
+const $ = (sel, el=document) => el.querySelector(sel);
+const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+const fmt$ = n => n ? `$${n.toFixed(2)}` : '—';
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function api(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error(`${path} -> ${r.status}`);
+  return r.json();
+}
+
+function statusBadge(status) {
+  return `<span class="badge status-${status}">${status.replace('_',' ')}</span>`;
+}
+
+// ── Projects view ──────────────────────────────────────────────────────────
+
+async function renderProjectsList() {
+  const view = $('#view-projects');
+  const projects = await api('/api/projects');
+  const totalCost = projects.reduce((s, p) => s + p.total_cost_usd, 0);
+  const totalTasks = projects.reduce((s, p) => s + p.tasks_total, 0);
+  const doneTasks = projects.reduce((s, p) => s + p.tasks_done, 0);
+  const totalRuns = projects.reduce((s, p) => s + p.runs_total, 0);
+
+  view.innerHTML = `
+    <section>
+      <div class="tiles">
+        <div class="tile"><div class="value">${projects.length}</div><div class="label">Projects</div></div>
+        <div class="tile"><div class="value">${doneTasks}/${totalTasks}</div><div class="label">Tasks done</div></div>
+        <div class="tile"><div class="value">${totalRuns}</div><div class="label">Agent runs</div></div>
+        <div class="tile"><div class="value">${fmt$(totalCost)}</div><div class="label">Total spend</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Project lifecycle</h2>
+      <table>
+        <thead><tr><th>Project</th><th>From</th><th>Stage</th><th class="num">Tasks</th><th class="num">Runs</th><th class="num">Cost</th></tr></thead>
+        <tbody>
+          ${projects.map(p => `
+            <tr class="clickable" data-slug="${esc(p.slug)}">
+              <td><strong>${esc(p.title)}</strong><br><span class="muted">${esc(p.slug)}</span></td>
+              <td class="muted">${esc(p.idea_id)}</td>
+              <td>${statusBadge(p.stage)}</td>
+              <td class="num">${p.tasks_done}/${p.tasks_total}</td>
+              <td class="num">${p.runs_total}</td>
+              <td class="num">${fmt$(p.total_cost_usd)}</td>
+            </tr>
+          `).join('') || '<tr><td colspan="6" class="muted">No projects yet — promote an idea to get started.</td></tr>'}
+        </tbody>
+      </table>
+    </section>
+  `;
+  $$('#view-projects tr.clickable').forEach(tr =>
+    tr.addEventListener('click', () => renderProjectDetail(tr.dataset.slug)));
+}
+
+async function renderProjectDetail(slug) {
+  const view = $('#view-projects');
+  const data = await api(`/api/projects/${slug}`);
+  const { project, tasks, runs, experiments } = data;
+
+  view.innerHTML = `
+    <span class="back-link" id="back">&larr; all projects</span>
+    <section>
+      <h2>${esc(project.title)}</h2>
+      <p class="muted">from ${esc(project.idea_id)} · created ${esc(project.created)}</p>
+    </section>
+    <div class="detail-grid">
+      <section>
+        <h2>Tasks</h2>
+        <table>
+          <thead><tr><th>Task</th><th>Title</th><th>Status</th><th>Depends on</th></tr></thead>
+          <tbody>
+            ${tasks.map(t => `
+              <tr><td class="muted">${esc(t.id)}</td><td>${esc(t.title)}</td>
+                <td>${statusBadge(t.status)}</td>
+                <td class="muted">${(t.depends_on||[]).join(', ') || '—'}</td></tr>
+            `).join('') || '<tr><td colspan="4" class="muted">no tasks yet</td></tr>'}
+          </tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Runs</h2>
+        <table>
+          <thead><tr><th>Run</th><th>Task</th><th>Provider</th><th>Status</th><th>Review</th><th class="num">Cost</th></tr></thead>
+          <tbody>
+            ${runs.map(r => `
+              <tr><td class="muted">${esc(r.id)}</td><td>${esc(r.task_id)}</td>
+                <td class="muted">${esc(r.provider)}</td>
+                <td>${statusBadge(r.status)}</td><td>${statusBadge(r.review)}</td>
+                <td class="num">${fmt$(r.cost_usd)}</td></tr>
+            `).join('') || '<tr><td colspan="6" class="muted">no runs yet</td></tr>'}
+          </tbody>
+        </table>
+      </section>
+    </div>
+    ${experiments.length ? `
+    <section>
+      <h2>Experiments</h2>
+      <table>
+        <thead><tr><th>When</th><th>Name</th><th>Metrics</th><th>Notes</th></tr></thead>
+        <tbody>
+          ${experiments.map(e => `
+            <tr><td class="muted">${esc(e.ts)}</td><td>${esc(e.name)}</td>
+              <td class="muted">${Object.entries(e.metrics).map(([k,v]) => `${k}=${v}`).join(' ')}</td>
+              <td class="muted">${esc(e.notes)}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </section>` : ''}
+  `;
+  $('#back').addEventListener('click', renderProjectsList);
+}
+
+// ── Ideas view ───────────────────────────────────────────────────────────
+
+async function renderIdeas() {
+  const view = $('#view-ideas');
+  const [ideas, domains] = await Promise.all([api('/api/ideas'), api('/api/domains')]);
+  const domainOptions = Object.entries(domains).map(([k,v]) => `<option value="${k}">${esc(v)}</option>`).join('');
+
+  view.innerHTML = `
+    <section>
+      <div class="tiles">
+        <div class="tile"><div class="value">${ideas.length}</div><div class="label">Ideas mapped</div></div>
+        <div class="tile"><div class="value">${ideas.filter(i => i.flagship_candidate).length}</div><div class="label">Flagship candidates</div></div>
+        <div class="tile"><div class="value">${ideas.filter(i => i.status === 'promoted').length}</div><div class="label">Promoted</div></div>
+      </div>
+    </section>
+    <section>
+      <h2>Idea map</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Title</th><th>Domain</th><th class="num">Total</th><th>Status</th></tr></thead>
+        <tbody>
+          ${ideas.map(i => `
+            <tr>
+              <td class="muted">${esc(i.id)}</td>
+              <td>${esc(i.title)} ${i.flagship_candidate ? '<span class="flag">FLAG</span>' : ''}</td>
+              <td class="muted">${esc(i.domain_name)}</td>
+              <td class="num">${i.total}/25</td>
+              <td>${i.status === 'promoted' ? statusBadge('done') : '<span class="muted">mapped</span>'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────
+
+$$('.tab').forEach(tab => tab.addEventListener('click', () => {
+  $$('.tab').forEach(t => t.classList.remove('active'));
+  $$('.view').forEach(v => v.classList.remove('active'));
+  tab.classList.add('active');
+  $(`#view-${tab.dataset.tab}`).classList.add('active');
+  if (tab.dataset.tab === 'ideas' && !$('#view-ideas').dataset.loaded) {
+    renderIdeas();
+    $('#view-ideas').dataset.loaded = '1';
+  }
+}));
+
+renderProjectsList();
+</script>
+</body>
+</html>

@@ -388,5 +388,48 @@ def config_show(
                   "edit .eros/config.toml (shared) or .eros/config.local.toml (this machine)[/dim]")
 
 
+# ── dashboard / desktop ──────────────────────────────────────────────────────
+
+@app.command()
+def dashboard(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8756, "--port"),
+    open_browser: bool = typer.Option(True, "--open/--no-open"),
+):
+    """Launch the local web dashboard (read-only view over the workspace)."""
+    store = _store()
+    import uvicorn
+    from .dashboard.api import create_app
+    if open_browser:
+        import threading
+        import webbrowser
+        threading.Timer(1.0, lambda: webbrowser.open(f"http://{host}:{port}")).start()
+    console.print(f"[green]EROS dashboard[/green] -> http://{host}:{port}  (Ctrl+C to stop)")
+    uvicorn.run(create_app(store), host=host, port=port, log_level="warning")
+
+
+@app.command()
+def desktop():
+    """Launch EROS as a single desktop window (pywebview over the dashboard)."""
+    store = _store()
+    try:
+        import webview
+    except ImportError:
+        console.print("[red]pywebview not installed.[/red] Run: "
+                       "[bold]pip install -e .[desktop][/bold]")
+        raise typer.Exit(1)
+    import threading
+    import uvicorn
+    from .dashboard.api import create_app
+
+    host, port = "127.0.0.1", 8757
+    server = uvicorn.Server(uvicorn.Config(create_app(store), host=host, port=port, log_level="warning"))
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    webview.create_window("EROS", f"http://{host}:{port}", width=1200, height=800)
+    webview.start()
+    server.should_exit = True
+
+
 if __name__ == "__main__":
     app()

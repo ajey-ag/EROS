@@ -31,7 +31,9 @@ eros decompose <project-slug>    # LLM writes architecture.md
 eros plan <project-slug>         # LLM writes TASK-*.md files
 eros dispatch <project-slug> TASK-001   # agent implements the task
 eros review <project-slug> RUN-001      # LLM reviews the diff
-eros status                      # lifecycle dashboard
+eros status                      # lifecycle overview (terminal)
+eros dashboard                   # lifecycle overview (browser, http://127.0.0.1:8756)
+eros desktop                     # same dashboard as a single native window (pip install -e .[desktop])
 ```
 
 ## Configuration
@@ -68,9 +70,11 @@ api_key_env = "ANTHROPIC_API_KEY"
 | `docs/VISION.md` | The concept and 5-stage roadmap |
 | `docs/ARCHITECTURE.md` | Shared infrastructure design (memory, knowledge, orchestration, experiments, visualization) |
 | `docs/IDEA_MAP.md` | Rendered master table of the idea map |
+| `docs/portfolio/` | Polished flagship writeups (Stage 5) |
 | `docs/notes/` | Dated session journals |
 | `NOTES.md` | Running project log — start here |
 | `src/eros/` | The CLI and engine |
+| `src/eros/dashboard/` | FastAPI + static single-page UI, read-only view over `workspace/` (`eros dashboard`) |
 | `workspace/ideas/idea_map.yaml` | Source of truth for all ideas |
 | `workspace/projects/<slug>/` | One directory per promoted project: charter, architecture, tasks, runs, experiments |
 
