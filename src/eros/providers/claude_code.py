@@ -18,16 +18,35 @@ class ClaudeCodeError(RuntimeError):
     pass
 
 
+def _find_vscode_extension_binary() -> str | None:
+    """The VS Code extension directory is versioned (anthropic.claude-code-X.Y.Z-...)
+    and updates in place, so a path pinned to one version goes stale the moment
+    the extension auto-updates. Discover the newest installed version instead.
+    """
+    ext_root = Path.home() / ".vscode" / "extensions"
+    if not ext_root.is_dir():
+        return None
+    candidates = sorted(ext_root.glob("anthropic.claude-code-*"), key=lambda p: p.name)
+    for ext_dir in reversed(candidates):  # newest version name last, alphabetically
+        exe = ext_dir / "resources" / "native-binary" / "claude.exe"
+        if exe.exists():
+            return str(exe)
+    return None
+
+
 class ClaudeCodeProvider(Provider):
     name = "claude_code"
 
     def _binary(self) -> str:
         binary = self.cfg.get("binary", "claude")
         resolved = shutil.which(binary) or (binary if Path(binary).exists() else None)
+        if not resolved and binary == "claude":
+            resolved = _find_vscode_extension_binary()
         if not resolved:
             raise ClaudeCodeError(
                 f"claude binary not found ('{binary}'). Set [provider.claude_code] "
-                "binary = '<full path to claude.exe>' in .eros/config.local.toml"
+                "binary = '<full path to claude.exe>' in .eros/config.local.toml, "
+                "or make sure the Claude Code VS Code extension is installed."
             )
         return resolved
 

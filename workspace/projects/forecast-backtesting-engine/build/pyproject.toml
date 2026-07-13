@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "backtest"
+version = "0.1.0"
+description = "Walk-forward backtesting engine with leakage guards, horizon-aware metrics, and champion/challenger tracking"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["backtest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
