@@ -2,6 +2,7 @@
 
 > Most people build applications. EROS is the factory that builds the next 20 projects.
 
+## About
 EROS is a personal, file-based operating system for research-grade side projects. One workspace where you can:
 
 1. **Capture** a research idea into a scored idea map (~100 ideas across 8 domains)
